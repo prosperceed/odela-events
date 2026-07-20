@@ -10,6 +10,26 @@ if (!isset($_SESSION['applicant_id'])) {
 $applicant_id   = $_SESSION['applicant_id'];
 $applicant_name = $_SESSION['applicant_name'];
 
+// Helper function to check if column exists
+$checkColumn = function($table, $column) use ($conn) {
+    $result = $conn->query("SHOW COLUMNS FROM `$table` LIKE '" . $conn->real_escape_string($column) . "'");
+    return $result && $result->num_rows > 0;
+};
+
+// Check & create booking columns for admin replies
+$bookings_has_admin_reply = $checkColumn('bookings', 'admin_reply');
+$bookings_has_replied_at  = $checkColumn('bookings', 'replied_at');
+
+if (!$bookings_has_admin_reply) {
+    $conn->query("ALTER TABLE bookings ADD COLUMN admin_reply TEXT NULL");
+    $bookings_has_admin_reply = $checkColumn('bookings', 'admin_reply');
+}
+
+if (!$bookings_has_replied_at) {
+    $conn->query("ALTER TABLE bookings ADD COLUMN replied_at DATETIME NULL");
+    $bookings_has_replied_at = $checkColumn('bookings', 'replied_at');
+}
+
 // ── Fetch user details ──
 $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->bind_param("i", $applicant_id);
@@ -34,39 +54,61 @@ $mStmt->bind_param("s", $applicant['email']);
 $mStmt->execute();
 $messages = $mStmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $mStmt->close();
-
 // ── Handle new booking ──
 $booking_success = $booking_error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'book') {
-    $event_type   = $conn->real_escape_string(trim($_POST['event_type']));
-    $event_date   = $conn->real_escape_string($_POST['event_date']);
-    $user_email = $conn->real_escape_string($_POST['user_email']);
-    $guest_count  = (int)$_POST['guest_count'];
-    $package      = $conn->real_escape_string($_POST['package']);
-    $dishes       = $conn->real_escape_string($_POST['dishes']);
-    $venue        = $conn->real_escape_string(trim($_POST['venue']));
-    $special_note = $conn->real_escape_string(trim($_POST['special_note']));
+    $event_type   = trim($_POST['event_type'] ?? '');
+    $event_date   = trim($_POST['event_date'] ?? '');
+    $user_email   = trim($_POST['user_email'] ?? '');
+    $guest_count  = (int)($_POST['guest_count'] ?? 0);
+    $package      = trim($_POST['package'] ?? '');
+    $dishes       = trim($_POST['dishes'] ?? '');
+    $venue        = trim($_POST['venue'] ?? '');
+    $special_note = trim($_POST['special_note'] ?? '');
 
-    if (!$event_type || !$event_date || !$guest_count || !$package) {
+    // Validate required fields
+    if (!$event_type || !$event_date || !$guest_count || !$package || !$user_email) {
         $booking_error = 'Please fill all required fields.';
+    } elseif (!filter_var($user_email, FILTER_VALIDATE_EMAIL)) {
+        $booking_error = 'Please enter a valid email address.';
+    } elseif ($guest_count < 10 || $guest_count > 5000) {
+        $booking_error = 'Guest count must be between 10 and 5000.';
     } elseif (strtotime($event_date) < strtotime('+3 days')) {
         $booking_error = 'Event date must be at least 3 days from today.';
     } else {
-        $ins = $conn->prepare("INSERT INTO bookings (user_id, event_type, event_date,user_email, guest_count, package, dishes, venue, special_note, status, created_at) VALUES (?,?,?,?,?,?,?,?,?,'Pending',NOW())");
-        $ins->bind_param("ississsss", $applicant_id, $event_type, $event_date, $user_email, $guest_count, $package, $dishes, $venue, $special_note);
-        if ($ins->execute()) {
-            $booking_success = 'Booking submitted! Our team will confirm within 24 hours.';
-            // Refresh bookings
-            $bStmt2 = $conn->prepare("SELECT * FROM bookings WHERE user_id = ? ORDER BY created_at DESC");
-            $bStmt2->bind_param("i", $applicant_id);
-            $bStmt2->execute();
-            $bookings = $bStmt2->get_result()->fetch_all(MYSQLI_ASSOC);
-            $bStmt2->close();
+        // Escape strings for SQL
+        $event_type_safe   = $conn->real_escape_string($event_type);
+        $event_date_safe   = $conn->real_escape_string($event_date);
+        $user_email_safe   = $conn->real_escape_string($user_email);
+        $package_safe      = $conn->real_escape_string($package);
+        $dishes_safe       = $conn->real_escape_string($dishes);
+        $venue_safe        = $conn->real_escape_string($venue);
+        $special_note_safe = $conn->real_escape_string($special_note);
+        
+        // Insert booking with prepared statement (include admin_reply/replied_at as NULL)
+        $ins = $conn->prepare("INSERT INTO bookings (user_id, event_type, event_date, user_email, guest_count, package, dishes, venue, special_note, admin_reply, replied_at, status, created_at) VALUES (?,?,?,?,?,?,?,?,?, NULL, NULL, 'Pending', NOW())");
+        
+        if ($ins) {
+            
+            $ins->bind_param("isssissss", $applicant_id, $event_type_safe, $event_date_safe, $user_email_safe, $guest_count, $package_safe, $dishes_safe, $venue_safe, $special_note_safe);
+            
+            if ($ins->execute()) {
+                $booking_success = 'Booking submitted! Our team will confirm within 24 hours.';
+                // Refresh bookings
+                $bStmt2 = $conn->prepare("SELECT * FROM bookings WHERE user_id = ? ORDER BY created_at DESC");
+                $bStmt2->bind_param("i", $applicant_id);
+                $bStmt2->execute();
+                $bookings = $bStmt2->get_result()->fetch_all(MYSQLI_ASSOC);
+                $bStmt2->close();
+            } else {
+                error_log('Booking insert failed: ' . $ins->error);
+                $booking_error = 'Failed to submit booking: ' . $ins->error;
+            }
+            $ins->close();
         } else {
-            error_log('Booking insert failed: ' . $ins->error);
-            $booking_error = 'Something went wrong. Please try again.';
+            error_log('Prepare failed: ' . $conn->error);
+            $booking_error = 'Database error. Please try again.';
         }
-        $ins->close();
     }
 }
 
@@ -374,7 +416,7 @@ $active_tab = $_POST['tab'] ?? $_GET['tab'] ?? 'overview';
     <div class="sidebar-logo">
         <a href="index.php" style="text-decoration:none; display:flex; align-items:center; gap:8px;">
             <span style="font-family:'Georgia',serif; font-size:1.2rem; font-weight:700; color:#fff;">Odela Events</span>
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--pink);display:inline-block;"></span>
+            <!-- <span style="width:7px;height:7px;border-radius:50%;background:var(--pink);display:inline-block;"></span> -->
         </a>
         <p style="color:rgba(255,255,255,0.45); font-size:11px; margin-top:4px; letter-spacing:0.5px;">Client Dashboard</p>
     </div>

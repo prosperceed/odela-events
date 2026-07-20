@@ -1,4 +1,4 @@
-<?php include("../header.php"); ?>
+<?php include("./includes/header.php"); ?>
 
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -69,7 +69,7 @@
                             </div>
                             <div class="ml-4">
                                 <h3 class="text-lg font-semibold text-gray-900">Address</h3>
-                                <p class="text-gray-600 mt-1">123 Education Street, Tech City, Nigeria</p>
+                                <p class="text-gray-600 mt-1">38 Alkali Street, Lafia, Nigeria</p>
                             </div>
                         </div>
 
@@ -92,8 +92,7 @@
                             </div>
                             <div class="ml-4">
                                 <h3 class="text-lg font-semibold text-gray-900">Email</h3>
-                                <p class="text-gray-600 mt-1">info@wingcommander.edu.ng</p>
-                                <p class="text-gray-600">admissions@wingcommander.edu.ng</p>
+                                <p class="text-gray-600 mt-1">bookings@odelaevents.com</p>
                             </div>
                         </div>
 
@@ -112,24 +111,7 @@
                     </div>
                 </div>
 
-                <!-- FAQ -->
-                <div class="bg-white rounded-lg shadow-lg p-8">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6">FAQs</h2>
-                    <div class="space-y-4">
-                        <details class="border-l-4 border-blue-600 pl-4">
-                            <summary class="font-semibold text-gray-900 cursor-pointer">How do I apply?</summary>
-                            <p class="text-gray-600 mt-2">Visit our Apply page and fill out the application form with your details. Submit and we will review your application.</p>
-                        </details>
-                        <details class="border-l-4 border-blue-600 pl-4">
-                            <summary class="font-semibold text-gray-900 cursor-pointer">What programs do you offer?</summary>
-                            <p class="text-gray-600 mt-2">We offer programs in various trade areas including welding, electrical installation, automotive technology, ICT, plumbing, carpentry, and more.</p>
-                        </details>
-                        <details class="border-l-4 border-blue-600 pl-4">
-                            <summary class="font-semibold text-gray-900 cursor-pointer">How long are the programs?</summary>
-                            <p class="text-gray-600 mt-2">Program duration varies from short courses (weeks) to diploma programs (2-3 years), depending on the trade area and department.</p>
-                        </details>
-                    </div>
-                </div>
+              
             </div>
         </div>
     </div>

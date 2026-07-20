@@ -57,18 +57,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login - Odela Events</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { margin: 0; font-family: 'Inter', sans-serif; color: #e2e8f0; }
+        .app-bg {
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, rgba(99,102,241,0.16), transparent 20%),
+                        radial-gradient(circle at bottom right, rgba(236,72,153,0.16), transparent 18%),
+                        linear-gradient(180deg, rgba(7,11,26,0.96), rgba(10,15,35,0.98));
+            position: relative;
+            overflow: hidden;
+        }
+        .app-bg::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(15,23,42,0.32), rgba(15,23,42,0.76));
+            pointer-events: none;
+        }
+        .form-card {
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 28px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .glass-input {
+            width: 100%;
+            padding: 14px 14px 14px 42px;
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 16px;
+            background: rgba(255,255,255,0.08);
+            color: #eef2ff;
+            transition: all 0.25s;
+            outline: none;
+            backdrop-filter: blur(14px);
+        }
+        .glass-input:focus {
+            border-color: rgba(59,130,246,0.9);
+            background: rgba(255,255,255,0.14);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
+        }
+        .glass-input::placeholder { color: rgba(203,213,225,0.8); }
+        .alert-danger {
+            background: rgba(244,63,94,0.16);
+            border: 1px solid rgba(248,113,113,0.24);
+            color: #fecdd3;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+        .glass-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #3b82f6, #ec4899);
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 16px 36px rgba(236,72,153,0.24);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .glass-button:hover { opacity: 0.95; transform: translateY(-1px); }
+        .text-soft { color: #cbd5e1; }
+        .link-soft { color: #bfdbfe; text-decoration: none; }
+        .link-soft:hover { color: #ffffff; }
+        .form-icon { color: #94a3b8; }
+        .form-title { color: #eef2ff; }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-blue-600 to-purple-600 min-h-screen flex items-center justify-center p-4">
+<body class="app-bg flex items-center justify-center p-4">
     <div class="w-full max-w-md">
-        <div class="bg-white rounded-lg shadow-2xl p-8">
+        <div class="form-card p-8">
             <div class="text-center mb-8">
-                <i class="fas fa-graduation-cap text-blue-600 text-4xl mb-4"></i>
-                <h1 class="text-3xl font-bold text-gray-900">User Login</h1>
-                <p class="text-gray-600 mt-2">Odela Events</p>
+                <p class="text-soft uppercase tracking-[0.24em] text-sm mb-3">Welcome back</p>
+                <!-- <h1 class="text-3xl font-bold form-title">User Login</h1> -->
+                <p class="text-soft mt-2">Odela Events</p>
             </div>
 
             <?php if (!empty($error)): ?>
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
+                <div class="alert-danger" role="alert">
                     <i class="fas fa-exclamation-circle mr-2"></i>
                     <?php echo htmlspecialchars($error); ?>
                 </div>
@@ -77,35 +144,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <form method="POST" class="space-y-6">
                 <!-- Email -->
                 <div>
-                    <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
+                    <label for="email" class="block text-soft font-semibold mb-2">Email Address</label>
                     <div class="relative">
-                        <i class="fas fa-envelope absolute left-3 top-3 text-gray-400"></i>
-                        <input type="email" id="email" name="email" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600" placeholder="your@email.com" required>
+                        <i class="fas fa-envelope absolute left-3 top-3 text-soft"></i>
+                        <input type="email" id="email" name="email" class="glass-input" placeholder="your@email.com" required>
                     </div>
                 </div>
 
                 <!-- Password -->
                 <div>
-                    <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+                    <label for="password" class="block text-soft font-semibold mb-2">Password</label>
                     <div class="relative">
-                        <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
-                        <input type="password" id="password" name="password" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600" placeholder="Enter your password" required>
+                        <i class="fas fa-lock absolute left-3 top-3 text-soft"></i>
+                        <input type="password" id="password" name="password" class="glass-input" placeholder="Enter your password" required>
                     </div>
                 </div>
 
                 <!-- Login Button -->
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                <button type="submit" class="glass-button">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </button>
             </form>
 
             <div class="mt-6 text-center">
-                <p class="text-gray-600">Don't have an account? <a href="../apply.php" class="text-blue-600 font-semibold hover:text-blue-700">Apply here</a></p>
+                <p class="text-soft">Don't have an account? <a href="signup.php" class="link-soft font-semibold">Sign up here</a></p>
             </div>
 
            
             <div class="mt-6 text-center">
-                <a href="index.php" class="text-gray-600 hover:text-gray-800">
+                <a href="index.php" class="link-soft">
                     <i class="fas fa-arrow-left mr-2"></i>Back to Home
                 </a>
             </div>

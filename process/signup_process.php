@@ -11,8 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Get and sanitize input
 $fullname = trim($_POST['fullname'] ?? '');
 $email = trim($_POST['email'] ?? '');
-$category = trim($_POST['category'] ?? '');
-$package = trim($_POST['package'] ?? '');
+// $category = trim($_POST['category'] ?? '');
+// $package = trim($_POST['package'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
 
@@ -28,13 +28,13 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 
-if (empty($category)) {
-    $errors[] = "Category is required";
-}
+// if (empty($category)) {
+//     $errors[] = "Category is required";
+// }
 
-if (empty($package)) {
-    $errors[] = "Package is required";
-}
+// if (empty($package)) {
+//     $errors[] = "Package is required";
+// }
 
 if (empty($password) || strlen($password) < 8) {
     $errors[] = "Password must be at least 8 characters";
@@ -65,14 +65,14 @@ if (!empty($errors)) {
 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
 // Insert into database
-$stmt = $conn->prepare("INSERT INTO users(fullname, email, category, package, password) VALUES(?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO users(fullname, email, password) VALUES(?, ?, ?)");
 
 if (!$stmt) {
     header("Location: ../signup.php?error=Database error");
     exit();
 }
 
-$stmt->bind_param("sssss", $fullname, $email, $category, $package, $hashed_password);
+$stmt->bind_param("sss", $fullname, $email,$hashed_password);
 
 if ($stmt->execute()) {
     header("Location: ../signup.php?success=1");

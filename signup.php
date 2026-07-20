@@ -20,14 +20,17 @@ include("./includes/header.php");
         /* ── Page background ── */
         .page-bg {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #1e3a8a 70%, #be185d 100%);
+            background: radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 24%),
+                        radial-gradient(circle at bottom right, rgba(236,72,153,0.18), transparent 20%),
+                        linear-gradient(180deg, rgba(7,11,26,0.96), rgba(15,23,42,0.98));
             position: relative;
             overflow: hidden;
         }
         .page-bg::before {
             content: '';
             position: absolute; inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Ccircle cx='40' cy='40' r='1.5' fill='%23ffffff' fill-opacity='0.04'/%3E%3C/g%3E%3C/svg%3E");
+            background: linear-gradient(180deg, rgba(15,23,42,0.32), rgba(15,23,42,0.76));
+            pointer-events: none;
         }
         /* Decorative blobs */
         .blob-1 {
@@ -43,9 +46,12 @@ include("./includes/header.php");
 
         /* ── Card ── */
         .form-card {
-            background: rgba(255, 255, 255, 0.97);
-            border-radius: 24px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1);
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 28px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
         }
 
         /* ── Left panel ── */
@@ -87,30 +93,31 @@ include("./includes/header.php");
             display: block;
             font-size: 11px; font-weight: 700;
             letter-spacing: 1.5px; text-transform: uppercase;
-            color: #374151; margin-bottom: 6px;
+            color: #cbd5e1; margin-bottom: 6px;
         }
 
         .field-input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1.5px solid rgba(255,255,255,0.14);
+            border-radius: 16px;
             font-size: 14px; font-family: 'Inter', sans-serif;
-            color: #111827;
-            background: #fafafa;
+            color: #eef2ff;
+            background: rgba(255,255,255,0.08);
             transition: all 0.25s;
             outline: none;
+            backdrop-filter: blur(14px);
         }
         .field-input:focus {
-            border-color: #1D4ED8;
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(29,78,216,0.08);
+            border-color: rgba(59,130,246,0.9);
+            background: rgba(255,255,255,0.14);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
         }
         .field-input.error-state {
             border-color: #f43f5e;
             box-shadow: 0 0 0 4px rgba(244,63,94,0.08);
         }
-        .field-input::placeholder { color: #9ca3af; }
+        .field-input::placeholder { color: rgba(203,213,225,0.75); }
 
         select.field-input { cursor: pointer; }
 
@@ -144,14 +151,14 @@ include("./includes/header.php");
         .btn-submit {
             width: 100%;
             padding: 15px;
-            border-radius: 14px;
+            border-radius: 16px;
             border: none; cursor: pointer;
             font-family: 'Inter', sans-serif;
             font-size: 15px; font-weight: 700; letter-spacing: 0.3px;
             color: #fff;
-            background: linear-gradient(135deg, #1D4ED8, #EC4899);
+            background: linear-gradient(135deg, #3b82f6, #ec4899);
             transition: opacity 0.25s, transform 0.2s, box-shadow 0.25s;
-            box-shadow: 0 8px 24px rgba(29,78,216,0.35);
+            box-shadow: 0 16px 36px rgba(236,72,153,0.24);
         }
         .btn-submit:hover {
             opacity: 0.92; transform: translateY(-2px);
@@ -182,13 +189,13 @@ include("./includes/header.php");
 
         /* Alert boxes */
         .alert-success {
-            background: #f0fdf4; border: 1px solid #86efac;
-            border-left: 4px solid #22c55e; color: #15803d;
+            background: rgba(52,211,153,0.16); border: 1px solid rgba(52,211,153,0.28);
+            border-left: 4px solid rgba(52,211,153,0.95); color: #d1fae5;
             padding: 14px 16px; border-radius: 12px; font-size: 14px; margin-bottom: 20px;
         }
         .alert-error {
-            background: #fff1f2; border: 1px solid #fda4af;
-            border-left: 4px solid #f43f5e; color: #be123c;
+            background: rgba(244,63,94,0.14); border: 1px solid rgba(244,63,94,0.28);
+            border-left: 4px solid rgba(244,63,94,0.95); color: #fecdd3;
             padding: 14px 16px; border-radius: 12px; font-size: 14px; margin-bottom: 20px;
         }
 
@@ -204,77 +211,17 @@ include("./includes/header.php");
     <div class="blob-1"></div>
     <div class="blob-2"></div>
 
-    <div class="form-card w-full max-w-5xl relative z-10" style="display:grid; grid-template-columns: 380px 1fr;">
+    <div class="form-card w-full max-w-3xl relative z-10 p-0 overflow-hidden">
 
-        <!-- ════════════════════════════
-             LEFT PANEL
-        ════════════════════════════ -->
-        <div class="left-panel relative z-10">
-
-            <!-- Brand -->
-            <div>
-                <a href="../index.php" style="text-decoration:none; display:flex; align-items:center; gap:8px; margin-bottom:40px;">
-                    <span style="font-family:'Georgia',serif; font-size:1.4rem; font-weight:700; color:#fff;">Odela Events</span>
-                    <span style="width:8px;height:8px;border-radius:50%; background:rgba(255,255,255,0.6);display:inline-block;"></span>
-                </a>
-
-                <h2 class="font-display" style="font-size:2rem; font-weight:900; color:#fff; line-height:1.2; margin-bottom:12px;">
-                    Create Your Account
-                </h2>
-                <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.7; margin-bottom:36px;">
-                    Join thousands of clients who trust Odela Events to make their celebrations unforgettable.
-                </p>
-
-                <div>
-                    <div class="perk-item">
-                        <div class="perk-icon"><i class="fas fa-calendar-check"></i></div>
-                        <div>
-                            <p style="color:#fff; font-weight:600; font-size:14px; margin-bottom:2px;">Easy Event Booking</p>
-                            <p style="color:rgba(255,255,255,0.6); font-size:12px; line-height:1.5;">Book and manage your events from your personal dashboard.</p>
-                        </div>
-                    </div>
-                    <div class="perk-item">
-                        <div class="perk-icon"><i class="fas fa-utensils"></i></div>
-                        <div>
-                            <p style="color:#fff; font-weight:600; font-size:14px; margin-bottom:2px;">Custom Menu Builder</p>
-                            <p style="color:rgba(255,255,255,0.6); font-size:12px; line-height:1.5;">Select dishes, quantities, and packages tailored to your event.</p>
-                        </div>
-                    </div>
-                    <div class="perk-item">
-                        <div class="perk-icon"><i class="fas fa-headset"></i></div>
-                        <div>
-                            <p style="color:#fff; font-weight:600; font-size:14px; margin-bottom:2px;">Dedicated Support</p>
-                            <p style="color:rgba(255,255,255,0.6); font-size:12px; line-height:1.5;">A personal event coordinator assigned to every booking.</p>
-                        </div>
-                    </div>
-                    <div class="perk-item" style="margin-bottom:0;">
-                        <div class="perk-icon"><i class="fas fa-shield-alt"></i></div>
-                        <div>
-                            <p style="color:#fff; font-weight:600; font-size:14px; margin-bottom:2px;">Secure & Private</p>
-                            <p style="color:rgba(255,255,255,0.6); font-size:12px; line-height:1.5;">Your data and payment details are always fully protected.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer note -->
-            <p style="color:rgba(255,255,255,0.45); font-size:12px; position:relative; z-index:2;">
-                &copy; <?php echo date('Y'); ?> Odela Events. All rights reserved.
-            </p>
-        </div>
-
-        <!-- ════════════════════════════
-             RIGHT PANEL — FORM
-        ════════════════════════════ -->
-        <div style="padding: 48px 44px; overflow-y: auto;">
+        <div style="padding: 48px 44px;">
 
             <!-- Top row -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px;">
                 <div>
-                    <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:900; color:#111827; margin-bottom:4px;">
+                    <h1 style="font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:900; color:#eef2ff; margin-bottom:4px;">
                         Sign Up
                     </h1>
-                    <p style="font-size:13px; color:#6b7280;">
+                    <p style="font-size:13px; color:#cbd5e1;">
                         Already have an account?
                         <a href="applicant-login.php" style="color:#1D4ED8; font-weight:600; text-decoration:none;">Sign in →</a>
                     </p>
@@ -283,7 +230,6 @@ include("./includes/header.php");
                 <div style="display:flex; gap:6px; align-items:center;">
                     <div class="step-dot active" id="dot1"></div>
                     <div class="step-dot" id="dot2"></div>
-                    <div class="step-dot" id="dot3"></div>
                 </div>
             </div>
 
@@ -304,13 +250,13 @@ include("./includes/header.php");
 
                 <!-- ── STEP 1: Personal Info ── -->
                 <div id="step1">
-                    <p style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#EC4899; margin-bottom:18px;">Step 1 of 3 — Personal Information</p>
+                    <p style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#EC4899; margin-bottom:18px;">Step 1 of 2 — Personal Information</p>
 
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px;">
                         <!-- Full Name -->
                         <div class="field-group" style="grid-column: span 2;">
                             <label class="field-label">Full Name <span style="color:#f43f5e;">*</span></label>
-                            <input type="text" id="fullname" name="fullname" class="field-input" placeholder="e.g. Aisha Bello">
+                            <input type="text" id="fullname" name="fullname" class="field-input" placeholder="e.g. Prosper Success">
                             <p class="err-msg" id="err-fullname">Full name must be at least 3 characters.</p>
                         </div>
 
@@ -330,57 +276,9 @@ include("./includes/header.php");
                     </button>
                 </div>
 
-                <!-- ── STEP 2: Program Info ── -->
+                <!-- ── STEP 2: Password ── -->
                 <div id="step2" style="display:none;">
-                    <p style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#EC4899; margin-bottom:18px;">Step 2 of 3 — Event Preferences</p>
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px;">
-                        <!-- Service Area -->
-                        <div class="field-group">
-                            <label class="field-label">Service Interest <span style="color:#f43f5e;">*</span></label>
-                            <select id="category" name="category" class="field-input">
-                                <option value="">Select a service</option>
-                                <option value="Wedding Catering">Wedding Catering</option>
-                                <option value="Corporate Events">Corporate Events</option>
-                                <option value="Birthday Parties">Birthday Parties</option>
-                                <option value="Naming Ceremonies">Naming Ceremonies</option>
-                                <option value="Buffet Setup">Buffet Setup</option>
-                                <option value="Small Chops Only">Small Chops Only</option>
-                                <option value="Full Service Package">Full Service Package</option>
-                                <option value="Custom Package">Custom Package</option>
-                            </select>
-                            <p class="err-msg" id="err-trade">Please select a service area.</p>
-                        </div>
-
-                        <!--Package -->
-                        <div class="field-group">
-                            <label class="field-label">Preferred Package <span style="color:#f43f5e;">*</span></label>
-                            <select id="package" name="package" class="field-input">
-                                <option value="">Select a package</option>
-                                <option value="Intimate (Up to 50)">Intimate — Up to 50 guests</option>
-                                <option value="Grand Celebration (Up to 200)">Grand Celebration — Up to 200 guests</option>
-                                <option value="Corporate">Corporate Events</option>
-                                <option value="Custom">Custom / Let Us Advise</option>
-                            </select>
-                            <p class="err-msg" id="err-dept">Please select a package.</p>
-                        </div>
-                    </div>
-
-                    <div style="display:flex; gap:12px; margin-top:4px;">
-                        <button type="button" onclick="goToStep(1)"
-                            style="flex:1; padding:13px; border-radius:12px; border:1.5px solid #e5e7eb; cursor:pointer; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; color:#374151; background:#fff; transition:background 0.2s;">
-                            ← Back
-                        </button>
-                        <button type="button" onclick="goToStep(3)"
-                            style="flex:2; padding:13px; border-radius:12px; border:none; cursor:pointer; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; color:#fff; background:linear-gradient(135deg,#1D4ED8,#EC4899);">
-                            Continue →
-                        </button>
-                    </div>
-                </div>
-
-                <!-- ── STEP 3: Password ── -->
-                <div id="step3" style="display:none;">
-                    <p style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#EC4899; margin-bottom:18px;">Step 3 of 3 — Secure Your Account</p>
+                    <p style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#EC4899; margin-bottom:18px;">Step 2 of 2 — Secure Your Account</p>
 
                     <div style="display:grid; gap:18px; margin-bottom:18px;">
 
@@ -417,7 +315,7 @@ include("./includes/header.php");
                     <p class="err-msg" id="err-terms" style="margin-top:-18px; margin-bottom:16px;">You must agree to the terms to continue.</p>
 
                     <div style="display:flex; gap:12px;">
-                        <button type="button" onclick="goToStep(2)"
+                        <button type="button" onclick="goToStep(1)"
                             style="flex:1; padding:15px; border-radius:12px; border:1.5px solid #e5e7eb; cursor:pointer; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; color:#374151; background:#fff;">
                             ← Back
                         </button>
@@ -450,13 +348,11 @@ include("./includes/header.php");
 /* ══ Step Navigation ══ */
 function goToStep(n) {
     if (n === 2 && !validateStep1()) return;
-    if (n === 3 && !validateStep2()) return;
 
-    [1,2,3].forEach(i => {
+    [1,2].forEach(i => {
         document.getElementById('step' + i).style.display = i === n ? 'block' : 'none';
         const dot = document.getElementById('dot' + i);
         dot.classList.toggle('active', i <= n);
-        // pill width for active
         dot.style.width = i === n ? '24px' : (i < n ? '24px' : '8px');
     });
 }
@@ -475,22 +371,6 @@ function validateStep1() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())) { showErr('err-email'); em.classList.add('error-state'); ok = false; }
     return ok;
 }
-
-/* ══ Step 2 validation ══ */
-function validateStep2() {
-    let ok = true;
-    const ta = document.getElementById('category');
-    const dp = document.getElementById('package');
-
-    clearErr(['err-trade','err-dept']);
-    ta.classList.remove('error-state');
-    dp.classList.remove('error-state');
-
-    if (!ta.value) { showErr('err-trade'); ta.classList.add('error-state'); ok = false; }
-    if (!dp.value) { showErr('err-dept');  dp.classList.add('error-state'); ok = false; }
-    return ok;
-}
-
 
 document.getElementById('signupForm').addEventListener('submit', function(e) {
     let ok = true;

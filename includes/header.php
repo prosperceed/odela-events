@@ -1,13 +1,37 @@
 <?php
 session_start();
+// normalize current script path and detect admin context robustly
+$__php_self = $_SERVER['PHP_SELF'] ?? '';
+$__in_admin = ($__php_self !== '' && strpos($__php_self, '/admin/') !== false);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+
+<link rel="preconnect" href="https://googleapis.com">
+<link rel="preconnect" href="https://gstatic.com" crossorigin>
+<link href="https://googleapis.com/css2?family=Inter:wght@400;500;600&family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <title>Odela Events</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          // This overrides the default 'font-sans' class to use Inter
+          sans: ['Inter', 'sans-serif'],
+          // This creates the 'font-heading' class for Montserrat
+          heading: ['Montserrat', 'sans-serif'],
+          // This creates the 'font-lato' class for Lato
+          lato: ['Lato', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
     <style>
         .glass-nav {
             background: rgba(15, 23, 60, 0.72);
@@ -122,26 +146,26 @@ session_start();
         <div class="flex items-center justify-between h-[68px]">
 
             <!-- ── Brand ── -->
-            <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../index.php' : 'index.php'; ?>"
+                <a href="<?php echo $__in_admin ? '../index.php' : 'index.php'; ?>"
                style="text-decoration:none; display:flex; align-items:center; gap:6px;">
                 <span style="font-family:'Georgia',serif; font-size:1.25rem; font-weight:700; color:#fff; letter-spacing:0.3px;">
                     Odela Events
                 </span>
-                <span class="brand-dot"></span>
+                <!-- <span class="brand-dot"></span> -->
             </a>
 
             <!-- ── Desktop Nav Links ── -->
             <div class="hidden md:flex items-center gap-8">
-                <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../index.php' : 'index.php'; ?>"
-                   class="nav-link <?php echo (strpos($_SERVER['PHP_SELF'], 'index.php') !== false && strpos($_SERVER['PHP_SELF'], '/admin/') === false) ? 'active' : ''; ?>">
+                     <a href="<?php echo $__in_admin ? '../index.php' : 'index.php'; ?>"
+                         class="nav-link <?php echo (strpos($__php_self, 'index.php') !== false && $__in_admin === false) ? 'active' : ''; ?>">
                     Home
                 </a>
-                <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../menu.php' : 'menu.php'; ?>"
-                   class="nav-link <?php echo strpos($_SERVER['PHP_SELF'], 'menu.php') !== false ? 'active' : ''; ?>">
+                     <a href="<?php echo $__in_admin ? '../menu.php' : 'menu.php'; ?>"
+                         class="nav-link <?php echo strpos($__php_self, 'menu.php') !== false ? 'active' : ''; ?>">
                     Menu
                 </a>
-                <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../contact.php' : 'contact.php'; ?>"
-                   class="nav-link <?php echo strpos($_SERVER['PHP_SELF'], 'contact.php') !== false ? 'active' : ''; ?>">
+                     <a href="<?php echo $__in_admin ? '../contact.php' : 'contact.php'; ?>"
+                         class="nav-link <?php echo strpos($__php_self, 'contact.php') !== false ? 'active' : ''; ?>">
                     Contact
                 </a>
             </div>
@@ -152,25 +176,25 @@ session_start();
                     <span style="color:rgba(255,255,255,0.6); font-size:13px;">
                         <?php echo htmlspecialchars($_SESSION['admin_name']); ?>
                     </span>
-                    <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? 'dashboard.php' : 'admin/dashboard.php'; ?>"
-                       class="btn-ghost">Dashboard</a>
-                    <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? 'logout.php' : 'admin/logout.php'; ?>"
-                       class="btn-logout">Sign out</a>
+                          <a href="<?php echo $__in_admin ? 'dashboard.php' : 'admin/dashboard.php'; ?>"
+                              class="btn-ghost">Dashboard</a>
+                          <a href="<?php echo $__in_admin ? 'logout.php' : 'admin/logout.php'; ?>"
+                              class="btn-logout">Sign out</a>
 
                 <?php elseif (isset($_SESSION['applicant_id'])): ?>
                     <span style="color:rgba(255,255,255,0.6); font-size:13px;">
                         <?php echo htmlspecialchars($_SESSION['applicant_name']); ?>
                     </span>
-                    <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../applicant-dashboard.php' : 'applicant-dashboard.php'; ?>"
-                       class="btn-ghost">My Bookings</a>
-                    <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../applicant-logout.php' : 'applicant-logout.php'; ?>"
-                       class="btn-logout">Sign out</a>
+                          <a href="<?php echo $__in_admin ? '../applicant-dashboard.php' : 'applicant-dashboard.php'; ?>"
+                              class="btn-ghost">My Bookings</a>
+                          <a href="<?php echo $__in_admin ? '../applicant-logout.php' : 'applicant-logout.php'; ?>"
+                              class="btn-logout">Sign out</a>
 
                 <?php else: ?>
-                    <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../signup.php' : 'signup.php'; ?>"
-                       class="btn-ghost">Sign Up</a>
-                    <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../book.php' : 'book.php'; ?>"
-                       class="btn-book">Book Now</a>
+                          <a href="<?php echo $__in_admin ? '../signup.php' : 'signup.php'; ?>"
+                              class="btn-ghost">Sign Up</a>
+                          <a href="<?php echo $__in_admin ? '../book.php' : 'book.php'; ?>"
+                              class="btn-book">Book Now</a>
                 <?php endif; ?>
             </div>
 
@@ -187,31 +211,31 @@ session_start();
 
     <!-- ── Mobile Drawer ── -->
     <div id="mobileMenu" class="hidden md:hidden px-5 pb-5 pt-2">
-        <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../index.php' : 'index.php'; ?>"
+        <a href="<?php echo $__in_admin ? '../index.php' : 'index.php'; ?>"
            class="mobile-link">Home</a>
-        <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../menu.php' : 'menu.php'; ?>"
+        <a href="<?php echo $__in_admin ? '../menu.php' : 'menu.php'; ?>"
            class="mobile-link">Menu</a>
-        <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../contact.php' : 'contact.php'; ?>"
+        <a href="<?php echo $__in_admin ? '../contact.php' : 'contact.php'; ?>"
            class="mobile-link">Contact</a>
 
         <div style="padding-top:16px; display:flex; flex-direction:column; gap:10px;">
             <?php if (isset($_SESSION['admin_id'])): ?>
-                <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? 'dashboard.php' : 'admin/dashboard.php'; ?>"
-                   class="btn-ghost" style="text-align:center;">Dashboard</a>
-                <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? 'logout.php' : 'admin/logout.php'; ?>"
-                   style="text-align:center; color:#f87171; font-size:14px;">Sign out</a>
+                     <a href="<?php echo $__in_admin ? 'dashboard.php' : 'admin/dashboard.php'; ?>"
+                         class="btn-ghost" style="text-align:center;">Dashboard</a>
+                     <a href="<?php echo $__in_admin ? 'logout.php' : 'admin/logout.php'; ?>"
+                         style="text-align:center; color:#f87171; font-size:14px;">Sign out</a>
 
             <?php elseif (isset($_SESSION['applicant_id'])): ?>
-                <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../applicant-dashboard.php' : 'applicant-dashboard.php'; ?>"
-                   class="btn-ghost" style="text-align:center;">My Bookings</a>
-                <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../applicant-logout.php' : 'applicant-logout.php'; ?>"
-                   style="text-align:center; color:#f87171; font-size:14px;">Sign out</a>
+                     <a href="<?php echo $__in_admin ? '../applicant-dashboard.php' : 'applicant-dashboard.php'; ?>"
+                         class="btn-ghost" style="text-align:center;">My Bookings</a>
+                     <a href="<?php echo $__in_admin ? '../applicant-logout.php' : 'applicant-logout.php'; ?>"
+                         style="text-align:center; color:#f87171; font-size:14px;">Sign out</a>
 
             <?php else: ?>
-                <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../signup.php' : 'signup.php'; ?>"
-                   class="btn-ghost" style="text-align:center;">Sign Up</a>
-                <a href="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/') ? '../book.php' : 'book.php'; ?>"
-                   class="btn-book" style="text-align:center;">Book Now</a>
+                     <a href="<?php echo $__in_admin ? '../signup.php' : 'signup.php'; ?>"
+                         class="btn-ghost" style="text-align:center;">Sign Up</a>
+                     <a href="<?php echo $__in_admin ? '../book.php' : 'book.php'; ?>"
+                         class="btn-book" style="text-align:center;">Book Now</a>
             <?php endif; ?>
         </div>
     </div>
